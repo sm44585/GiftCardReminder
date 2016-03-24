@@ -57,6 +57,7 @@ public class AddGiftCard extends AppCompatActivity {
         finish();
     }
 
+
     public void takePhoto (View target){
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
@@ -68,6 +69,7 @@ public class AddGiftCard extends AppCompatActivity {
                 // Error occurred while creating the File
                 Log.i(TAG, "IOException");
             }
+
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
