@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.database.Cursor;
 
 import org.w3c.dom.Text;
 
@@ -30,12 +32,16 @@ public class AddGiftCard extends AppCompatActivity {
     private EditText amountEditText;
     private Button backButton;
     private Button photoButton;
+    private Button submitButton;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
     private ImageView mImageView;
     // define TAG constant for Log messages
     private static final String TAG = "AddGiftCard";
+
+    // create an instance of the DatabaseHelper class here
+    DatabaseHelper myDb;
 
 
     @Override
@@ -50,7 +56,36 @@ public class AddGiftCard extends AppCompatActivity {
         amountEditText = (EditText) findViewById(R.id.amountEditText);
         backButton = (Button) findViewById(R.id.backButton);
         photoButton = (Button) findViewById(R.id.photoButton);
+        submitButton = (Button) findViewById(R.id.submitButton);
         mImageView = (ImageView) findViewById(R.id.mImageView);
+
+        // this will call the constructor of the DatabaseHelper class which will create the DB
+        myDb = new DatabaseHelper(this);
+
+        // in the onCreate of the Main Activity, call all of the methods needed to manage the DB
+        AddData();
+
+    }
+
+    // this section listens for the "Submit" button event and inserts into the DB
+    // must convert to String in order to input into the DB
+    public void AddData() {
+        submitButton.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Log.i(TAG, "submitButton clicked");
+                        String storeName = storeEditText.getText().toString();
+                        double amount = Double.parseDouble(amountEditText.getText().toString());
+
+                        boolean isInserted = myDb.insertData(storeName, amount);
+                        if (isInserted == true)
+                            Toast.makeText(AddGiftCard.this, "Data Inserted", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(AddGiftCard.this, "Data NOT Inserted", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+        );
     }
 
     public void onBackToMain (View target){
