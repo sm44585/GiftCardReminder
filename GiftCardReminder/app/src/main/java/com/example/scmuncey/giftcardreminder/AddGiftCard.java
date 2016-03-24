@@ -77,11 +77,13 @@ public class AddGiftCard extends AppCompatActivity {
                         String storeName = storeEditText.getText().toString();
                         double amount = Double.parseDouble(amountEditText.getText().toString());
 
-                        boolean isInserted = myDb.insertData(storeName, amount);
+                        boolean isInserted = myDb.insertData(storeName, amount, mCurrentPhotoPath);
                         if (isInserted == true)
                             Toast.makeText(AddGiftCard.this, "Data Inserted", Toast.LENGTH_LONG).show();
+
                         else
                             Toast.makeText(AddGiftCard.this, "Data NOT Inserted", Toast.LENGTH_LONG).show();
+                        finish();
                     }
 
                 }
@@ -100,9 +102,10 @@ public class AddGiftCard extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
-            } catch (IOException ex) {
+            } catch (Exception e) {
                 // Error occurred while creating the File
                 Log.i(TAG, "IOException");
+                e.printStackTrace();
             }
 
             // Continue only if the File was successfully created

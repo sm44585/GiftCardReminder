@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_1 = "ID";
     public static final String COL_2 = "STORE_NAME";
     public static final String COL_3 = "AMOUNT";
+    public static final String COL_4 = "IMG_PATH";
 
     // this is referencing the java class that will manage the SQL DB
     public DatabaseHelper(Context context) {
@@ -34,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         // this is the execute sql query method that takes a string sql query and executes this query
-        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, STORE_NAME TEXT, AMOUNT REAL)");
+        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, STORE_NAME TEXT, AMOUNT REAL, IMG_PATH TEXT)");
 
     }
 
@@ -47,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertData(String storeName, double amount) {
+    public boolean insertData(String storeName, double amount, String imagePath) {
 
         // Open the database for reading and writing
         SQLiteDatabase db = this.getWritableDatabase();
@@ -56,8 +57,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         // you need to specify the column and the data for that column
-        contentValues.put(COL_2,storeName);
-        contentValues.put(COL_3,amount);
+        contentValues.put(COL_2, storeName);
+        contentValues.put(COL_3, amount);
+        contentValues.put(COL_4, imagePath);
 
         // need to give this the table name and the content values
         long result = db.insert(TABLE_NAME,null,contentValues);
