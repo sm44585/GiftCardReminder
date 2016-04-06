@@ -54,7 +54,6 @@
         android:layout_height="wrap_content"
         android:text="Take Photo of Gift Card"
         android:id="@+id/photoButton"
-        android:onClick="takePhoto"
         android:background="#167006"
         android:textSize="32dp"
         android:textColor="#ffffff"
