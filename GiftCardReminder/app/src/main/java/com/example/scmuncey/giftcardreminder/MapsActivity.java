@@ -10,7 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
 
@@ -39,8 +39,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng domain_apple = new LatLng(30.401679, -97.726855);
+        LatLng current_location = new LatLng(30.284891, -97.734014);
+        mMap.addMarker(new MarkerOptions().position(domain_apple).title("Domain Apple Store"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
+        //Add a map click listener
+        mMap.setOnMapClickListener(this);
+        //Set UI settings.
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMapToolbarEnabled(true);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+
     }
 }
+
