@@ -28,4 +28,8 @@ public class MainMenu extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), AddGiftCard.class);
         startActivity(i);
     }
+    public void storesNearYou (View target){
+        Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivity(i);
+    }
 }

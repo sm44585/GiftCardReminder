@@ -41,7 +41,8 @@
         android:layout_weight="1"
         android:background="#1a1fa9"
         android:textColor="#ffffff"
-        android:textSize="32dp" />
+        android:textSize="32dp"
+        android:onClick="storesNearYou"/>
 
     <TextView
         android:layout_width="wrap_content"
