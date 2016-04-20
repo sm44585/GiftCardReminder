@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TextView android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Gift Card Reminder"
+        android:textStyle="bold|italic"
+        android:textAlignment="center"
+        android:textColor="#833c3c"
+        android:textSize="45dp"
+        android:background="#000000" />
+
+    <ImageView android:id="@+id/splashscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/splash"
+        android:layout_gravity="center"
+        android:background="#000000" />
+
+
+</LinearLayout>
+
