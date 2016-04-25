@@ -130,10 +130,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
         // Zoom in the Google Map
-        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You are here!"));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-
+        //Need to add dummy markers because ran out of time to do Google Maps search of local business
+        //add marker for nearest REI
+        LatLng rei = new LatLng(30.271853, -97.753223);
+        mMap.addMarker(new MarkerOptions().position(rei).title("REI store on Lamar"));
+        //add marker for nearest Zoes Kitchen
+        LatLng zoes = new LatLng(30.227976, -97.820657);
+        mMap.addMarker(new MarkerOptions().position(zoes).title("Zoes Kitchen on Brodie"));
+        //add marker for nearest Whole Foods
+        LatLng wf = new LatLng(30.270551, -97.753274);
+        mMap.addMarker(new MarkerOptions().position(wf).title("Whole Foods on Lamar"));
     }
 
     @Override
