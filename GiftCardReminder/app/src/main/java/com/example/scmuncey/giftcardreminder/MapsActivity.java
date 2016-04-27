@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.Address;
+import android.widget.Toast;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -41,29 +44,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //declare Google Map variable
     private GoogleMap mMap;
 
+    //declare location request code
+    private static final int LOCATION_REQUEST_CODE = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,
+                LOCATION_REQUEST_CODE);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        //For SDK 23 and greater, must ask user for location permission
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(getString(R.string.app_name), "Permission is granted");
 
-            } else {
+    }
 
-                Log.v(getString(R.string.app_name), "Permission is revoked");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    protected void requestPermission(String permissionType, int requestCode) {
+        int permission = ContextCompat.checkSelfPermission(this,
+                permissionType);
 
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permissionType}, requestCode
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE: {
+
+                if (grantResults.length == 0
+                        || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Unable to show location - permission required", Toast.LENGTH_LONG).show();
+                }
+                return;
             }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(getString(R.string.app_name), "Permission is granted");
-
         }
     }
 
@@ -79,58 +98,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //Create Google Map variable
+        //access the googleMap variable declared earlier
         mMap = googleMap;
+
+        //Initialize Google Play Services
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                //enable current location
+                mMap.setMyLocationEnabled(true);
+            }
+        }
+
 
         //Add a map click listener
         mMap.setOnMapClickListener(this);
 
-        //Add current location button
-        mMap.setMyLocationEnabled(true);
 
         //Set UI settings.
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(true);
 
-        //handle the permission request when map loads
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+
+            // Get LocationManager object from System Service LOCATION_SERVICE
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            // Create a criteria object to retrieve provider
+            Criteria criteria = new Criteria();
+
+            // Get the name of the best provider
+            String provider = locationManager.getBestProvider(criteria, true);
+
+            // Get Current Location
+            Location myLocation = locationManager.getLastKnownLocation(provider);
+
+
+            // Get latitude of the current location
+            double latitude = myLocation.getLatitude();
+
+            // Get longitude of the current location
+            double longitude = myLocation.getLongitude();
+
+            // Create a LatLng object for the current location
+            LatLng latLng = new LatLng(latitude, longitude);
+
+            // Show the current location in Google Map
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+            // Zoom in the Google Map
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
-        // Get LocationManager object from System Service LOCATION_SERVICE
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        // Create a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
-
-        // Get the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        // Get Current Location
-        Location myLocation = locationManager.getLastKnownLocation(provider);
-
-
-        // Get latitude of the current location
-        double latitude = myLocation.getLatitude();
-
-        // Get longitude of the current location
-        double longitude = myLocation.getLongitude();
-
-        // Create a LatLng object for the current location
-        LatLng latLng = new LatLng(latitude, longitude);
-
-        // Show the current location in Google Map
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-        // Zoom in the Google Map
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
         //Need to add dummy markers because ran out of time to do Google Maps search of local business
         //add marker for nearest REI
@@ -149,15 +172,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    //display results of permission request
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.v(getString(R.string.app_name), "Permission: " + permissions[0] + "was " + grantResults[0]);
-            //resume tasks needing this permission
-        }
-    }
     //method that handles the address search request
     public void onSearch(View view) {
         EditText location_tf = (EditText) findViewById(R.id.TFaddress);
