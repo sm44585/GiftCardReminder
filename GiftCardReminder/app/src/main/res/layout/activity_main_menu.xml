@@ -12,7 +12,8 @@
         android:layout_weight="1"
         android:background="#585cff"
         android:textSize="32dp"
-        android:onClick="viewGiftCard"/>
+        android:onClick="viewGiftCard"
+        android:textColor="#ffffff" />
 
     <Button
         android:layout_width="match_parent"
